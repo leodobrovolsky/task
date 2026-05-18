@@ -101,6 +101,7 @@ def sort_files(folder):
     os.mkdir(temp_folder + "\\documents")
     os.mkdir(temp_folder + "\\musics")
     os.mkdir(temp_folder + "\\archives")
+    os.mkdir(temp_folder + "\\other")
 
     #copy files
     for file in files:
@@ -108,15 +109,15 @@ def sort_files(folder):
         file.normalize_name = normalize_name
         folder_app_name = "\\other\\"
 
-        if file.app in images_app:
+        if file.app.upper() in images_app:
             folder_app_name = "\\images\\"
-        elif file.app in videos_app:
+        elif file.app.upper() in videos_app:
             folder_app_name = "\\videos\\"
-        elif file.app in documents_app:
+        elif file.app.upper() in documents_app:
             folder_app_name = "\\documents\\"
-        elif file.app in musics_app:
+        elif file.app.upper() in musics_app:
             folder_app_name = "\\musics\\"
-        elif file.app in archives_app:
+        elif file.app.upper() in archives_app:
             folder_app_name = "\\archives\\"
 
         symbol_dot = ""
@@ -124,11 +125,14 @@ def sort_files(folder):
             symbol_dot = "."
 
         print(f"from : {file.path} to : {temp_folder + folder_app_name + normalize_name + symbol_dot + file.app}")
-        shutil.copy(file.fullname, temp_folder + folder_app_name + normalize_name + symbol_dot + file.app)
+        shutil.copy(file.path, temp_folder + folder_app_name + normalize_name + symbol_dot + file.app)
 
     #delete origin files
-    for file in folder:
-        os.remove(file)
+    for file in os.listdir(folder):
+        if os.path.isdir(folder + "\\" + file):
+            shutil.rmtree(folder + "\\" + file)
+        else:
+            os.remove(folder + "\\" + file)
 
     #copy in origin folder
     for _folder in os.listdir(temp_folder):
